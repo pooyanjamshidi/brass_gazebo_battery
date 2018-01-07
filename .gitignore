@@ -18,6 +18,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+cmake-build-debug/
 .Python
 env/
 build/
