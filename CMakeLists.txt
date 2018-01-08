@@ -122,7 +122,7 @@ include_directories(
 )
 
 ## Declare a C++ library
-add_library(${PROJECT_NAME} SHARED src/battery_discharge.cpp)
+add_library(${PROJECT_NAME} SHARED src/battery_discharge.cpp src/battery_consumer.hh src/battery_consumer.cpp src/battery_consumer.hh src/battery_consumer.cpp)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries

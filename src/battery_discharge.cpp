@@ -41,7 +41,16 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     this->model = _model;
     this->world = _model->GetWorld();
 
-
+    this->e0 = _sdf->Get<double>("constant_coef");
+    this->e1 = _sdf->Get<double>("linear_coef");
+    this->c = _sdf->Get<double>("capacity");
+    this->r = _sdf->Get<double>("resistance");
+    this->tau = _sdf->Get<double>("smooth_current_tau");
+    std::string batteryName = _sdf->Get<std::string>("battery_name");
+    // Creates the battery
+    this->battery = this->link->Battery(batteryName);
+    // Specifying a custom update function
+    this->battery->SetUpdateFunc(std::bind(&BatteryPlugin::OnUpdateVoltage, this, std::placeholders::_1));
 }
 
 void BatteryPlugin::Init()
@@ -74,6 +83,6 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
 
     this->q = this->q - GZ_SEC_TO_HOUR(dt * this->ismooth);
 
-    return this->e0 + this->e1*(1 - this->q/this->c) - this->r * this->ismooth;
-    
+    return this->e0 + this->e1 * (1 - this->q / this->c) - this->r * this->ismooth;
+
 }
