@@ -41,6 +41,9 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     this->model = _model;
     this->world = _model->GetWorld();
 
+    std::string linkName = _sdf->Get<std::string>("link_name");
+    this->link = this->model->GetLink(linkName);
+
     this->e0 = _sdf->Get<double>("constant_coef");
     this->e1 = _sdf->Get<double>("linear_coef");
     this->c = _sdf->Get<double>("capacity");

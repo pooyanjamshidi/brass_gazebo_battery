@@ -26,5 +26,4 @@ namespace gazebo
 
 }
 
-
 #endif //BRASS_GAZEBO_BATTERY_BATTERY_CONSUMER_H
