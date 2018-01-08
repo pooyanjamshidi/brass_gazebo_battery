@@ -19,6 +19,28 @@ namespace gazebo
     // Inherited.
     public: virtual void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
 
+    public: virtual void Init();
+
+    public: virtual void Reset();
+
+    private: double OnUpdateVoltage(const common::BatteryPtr &_battery);
+
+    // Connection to the World Update events.
+    protected: event::ConnectionPtr updateConnection;
+
+    protected: physics::WorldPtr world;
+
+    protected: physics::PhysicsEnginePtr physics;
+
+    protected: physics::ModelPtr model;
+
+    protected: physics::LinkPtr link;
+
+    protected: common::BatteryPtr battery;
+
+    protected: sdf::ElementPtr sdf;
+
+
     // E(t) = e0 + e1* Q(t)/c
     protected: double e0;
     protected: double e1;
@@ -43,8 +65,6 @@ namespace gazebo
 
     // Instantaneous battery charge in Ah.
     protected: double q;
-
-
 
     };
 }
