@@ -7,6 +7,9 @@
 #include "gazebo/common/Plugin.hh"
 #include "gazebo/common/CommonTypes.hh"
 #include "gazebo/physics/physics.hh"
+#include "ros/ros.h"
+#include "ros/subscribe_options.h"
+#include <boost/thread/mutex.hpp>
 
 namespace gazebo
 {
@@ -42,6 +45,7 @@ namespace gazebo
 
 
     // E(t) = e0 + e1* Q(t)/c
+    protected: double et;
     protected: double e0;
     protected: double e1;
 
@@ -65,6 +69,13 @@ namespace gazebo
 
     // Instantaneous battery charge in Ah.
     protected: double q;
+
+    // This node is for ros communications
+    protected: std::unique_ptr<ros::NodeHandle> rosNode;
+
+    protected: ros::Publisher charge_state;
+    protected: ros::Publisher motor_power;
+    protected: boost::mutex lock;
 
     };
 }

@@ -51,6 +51,7 @@
                 </battery>
             </link>
             <plugin name="battery" filename="">
+                <ros_node>battery_monitor_client</ros_node>
                 <link_name>body</link_name>
                 <battery_name>linear_battery</battery_name>
                 <constant_coef>12.694</constant_coef>
