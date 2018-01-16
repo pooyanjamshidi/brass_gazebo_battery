@@ -10,6 +10,8 @@
 #include <functional>
 #include <kobuki_msgs/MotorPower.h>
 #include "std_msgs/Float64.h"
+#include "std_msgs/Bool.h"
+
 
 using namespace gazebo;
 
@@ -40,13 +42,16 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
         ros::init(argc, argv, "battery_discharge_client", ros::init_options::NoSigintHandler);
     }
 
-    // Create ros node and publish stuff there!
-    this->rosNode.reset(new ros::NodeHandle(_sdf->Get<std::string>("ros_node")));
-    this->motor_power = this->rosNode->advertise<kobuki_msgs::MotorPower>("/mobile_base/commands/motor_power", 1);
-    this->charge_state = this->rosNode->advertise<std_msgs::Float64>("batter_monitor/charge_level", 1);
 
     this->model = _model;
     this->world = _model->GetWorld();
+
+    // Create ros node and publish stuff there!
+    this->rosNode.reset(new ros::NodeHandle(_sdf->Get<std::string>("ros_node")));
+    this->motor_power = this->rosNode->advertise<kobuki_msgs::MotorPower>("/mobile_base/commands/motor_power", 1);
+    this->charge_state = this->rosNode->advertise<std_msgs::Float64>(this->world->GetName() + "/charge_level", 1);
+
+    this->set_charging = this->rosNode->advertiseService<ros::ServiceServer>(this->model->GetName() + "/set_charging", &BatteryPlugin::SetCharging);
 
     std::string linkName = _sdf->Get<std::string>("link_name");
     this->link = this->model->GetLink(linkName);
@@ -66,6 +71,7 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 void BatteryPlugin::Init()
 {
     this->q = this->q0;
+    this->charging = false;
 }
 
 void BatteryPlugin::Reset()
@@ -114,4 +120,11 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
 
     return et;
 
+}
+
+bool BatteryPlugin::SetCharging(const std_msgs::BoolConstPtr &_msg)
+{
+    lock.lock();
+    this->charging = _msg->data;
+    lock.unlock();
 }

@@ -10,6 +10,7 @@
 #include "ros/ros.h"
 #include "ros/subscribe_options.h"
 #include <boost/thread/mutex.hpp>
+#include "std_msgs/Bool.h"
 
 namespace gazebo
 {
@@ -27,6 +28,8 @@ namespace gazebo
     public: virtual void Reset();
 
     private: double OnUpdateVoltage(const common::BatteryPtr &_battery);
+
+    public: bool SetCharging(const std_msgs::BoolConstPtr &_msg);
 
     // Connection to the World Update events.
     protected: event::ConnectionPtr updateConnection;
@@ -75,7 +78,12 @@ namespace gazebo
 
     protected: ros::Publisher charge_state;
     protected: ros::Publisher motor_power;
+
+    protected: ros::ServiceServer set_charging;
+
     protected: boost::mutex lock;
+
+    protected: bool charging;
 
     };
 }

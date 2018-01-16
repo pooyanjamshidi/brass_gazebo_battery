@@ -60,6 +60,7 @@
                 <capacity>1.2009</capacity>
                 <resistance>0.061523</resistance>
                 <smooth_current_tau>1.9499</smooth_current_tau>
+                <charge_rate>0.2</charge_rate>
             </plugin>
             <plugin name="motherboard" filename="libBatteryConsumerPlugin.so">
                 <link_name>body</link_name>
