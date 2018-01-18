@@ -12,7 +12,6 @@
 #include "std_msgs/Float64.h"
 #include "std_msgs/Bool.h"
 
-
 using namespace gazebo;
 
 GZ_REGISTER_MODEL_PLUGIN(BatteryPlugin);
@@ -51,7 +50,8 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     this->motor_power = this->rosNode->advertise<kobuki_msgs::MotorPower>("/mobile_base/commands/motor_power", 1);
     this->charge_state = this->rosNode->advertise<std_msgs::Float64>(this->world->GetName() + "/charge_level", 1);
 
-    this->set_charging = this->rosNode->advertiseService<ros::ServiceServer>(this->model->GetName() + "/set_charging", &BatteryPlugin::SetCharging);
+    this->set_charging = this->rosNode->advertiseService(this->model->GetName() + "/set_charging", &BatteryPlugin::SetCharging, this);
+    this->set_charge = this->rosNode->advertiseService(this->model->GetName() + "/set_charge", &BatteryPlugin::SetCharge, this);
 
     std::string linkName = _sdf->Get<std::string>("link_name");
     this->link = this->model->GetLink(linkName);
@@ -102,9 +102,9 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
     this->et = this->e0 + this->e1 * (1 - this->q / this->c) - this->r * this->ismooth;
 
     //Turn off motor
-    if (this->et <= 0)
+    if (this->q <= 0)
     {
-        this->et = 0;
+        this->q = 0;
         kobuki_msgs::MotorPower power_msg;
         power_msg.state = 0;
         lock.lock();
@@ -113,7 +113,7 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
     }
 
     std_msgs::Float64 charge_msg;
-    charge_msg.data = this->et;
+    charge_msg.data = this->q;
     lock.lock();
     this->charge_state.publish(charge_msg);
     lock.unlock();
@@ -122,9 +122,24 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
 
 }
 
-bool BatteryPlugin::SetCharging(const std_msgs::BoolConstPtr &_msg)
+bool BatteryPlugin::SetCharging(brass_gazebo_battery::SetCharging::Request& req,
+                                brass_gazebo_battery::SetCharging::Response& res)
 {
+
     lock.lock();
-    this->charging = _msg->data;
+    this->charging = req.charging;
     lock.unlock();
+    res.result = true;
+    return true;
+}
+
+bool BatteryPlugin::SetCharge(brass_gazebo_battery::SetCharge::Request &req,
+                              brass_gazebo_battery::SetCharge::Response &res)
+{
+
+    lock.lock();
+    this->q = req.charge;
+    lock.unlock();
+    res.result = true;
+    return true;
 }

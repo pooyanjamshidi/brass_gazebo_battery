@@ -12,7 +12,35 @@ find_package(catkin REQUIRED COMPONENTS
   gazebo_plugins
   gazebo_ros
   roscpp
+  message_generation
 )
+
+find_package(catkin REQUIRED COMPONENTS
+        gazebo_dev
+        gencpp
+        message_generation
+        gazebo_msgs
+        roscpp
+        rospy
+        nodelet
+        angles
+        std_srvs
+        geometry_msgs
+        sensor_msgs
+        nav_msgs
+        urdf
+        tf
+        tf2_ros
+        dynamic_reconfigure
+        rosgraph_msgs
+        trajectory_msgs
+        image_transport
+        rosconsole
+        cv_bridge
+        polled_camera
+        diagnostic_updater
+        camera_info_manager
+        )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -54,12 +82,12 @@ find_package(catkin REQUIRED COMPONENTS
 #   Message2.msg
 # )
 
-## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+# Generate services in the 'srv' folder
+add_service_files(
+  FILES
+  SetCharge.srv
+  SetCharging.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -69,10 +97,11 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+DEPENDENCIES
+std_msgs  # Or other packages containing msgs
+)
+
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -104,10 +133,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES brass_gazebo_battery
-#  CATKIN_DEPENDS gazebo_plugins gazebo_ros roscpp
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES brass_gazebo_battery
+  CATKIN_DEPENDS gazebo_plugins gazebo_ros roscpp std_msgs
 )
 
 ###########
@@ -121,18 +149,27 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+add_library(battery_discharge SHARED src/battery_discharge.cpp)
+add_dependencies(battery_discharge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(battery_discharge ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
+
+add_library(battery_consumer SHARED src/battery_consumer.cpp)
+add_dependencies(battery_consumer ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(battery_consumer ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
+
+
 ## Declare a C++ library
-add_library(${PROJECT_NAME} SHARED src/battery_discharge.cpp src/battery_consumer.hh src/battery_consumer.cpp src/battery_consumer.hh src/battery_consumer.cpp)
+#add_library(${PROJECT_NAME} SHARED src/battery_discharge.cpp src/battery_discharge.hh src/battery_consumer.cpp src/battery_consumer.hh)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}_node src/battery_discharge.cpp)
+#add_executable(battery_discharge_node src/battery_discharge.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -142,12 +179,13 @@ add_executable(${PROJECT_NAME}_node src/battery_discharge.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(battery_discharge_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+#target_link_libraries(battery_discharge_node
+#  ${catkin_LIBRARIES}
+#)
+
 
 #############
 ## Install ##
@@ -170,12 +208,19 @@ add_executable(${PROJECT_NAME}_node src/battery_discharge.cpp)
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
+install(TARGETS
+        battery_discharge
+        battery_consumer
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        )
+
 ## Mark cpp header files for installation
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
-# )
+#install(DIRECTORY include/${PROJECT_NAME}/
+#DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+#FILES_MATCHING PATTERN "*.h"
+#PATTERN ".svn" EXCLUDE
+#)
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES

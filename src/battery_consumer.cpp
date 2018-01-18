@@ -1,14 +1,10 @@
-//
-// Created by pjamshidi on 1/7/18.
-//
-
 #include "battery_consumer.hh"
 #include "gazebo/common/Battery.hh"
 #include "gazebo/physics/physics.hh"
 
 using namespace gazebo;
 
-GZ_REGISTER_MODEL_PLUGIN(BatteryConsumerPlugin)
+// GZ_REGISTER_MODEL_PLUGIN(BatteryConsumerPlugin);
 
 BatteryConsumerPlugin::BatteryConsumerPlugin() : consumerId(-1)
 {
@@ -32,7 +28,7 @@ void BatteryConsumerPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     this->battery = link->Battery(batteryName);
 
     // Add consumer and sets its power load
-    double powerLoad = _sdf->Get("power_load");
+    double powerLoad = _sdf->Get<double>("power_load");
     this->consumerId = this->battery->AddConsumer();
     this->battery->SetPowerLoad(this->consumerId, powerLoad);
 }

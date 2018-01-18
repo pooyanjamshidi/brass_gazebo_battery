@@ -9,8 +9,11 @@
 #include "gazebo/physics/physics.hh"
 #include "ros/ros.h"
 #include "ros/subscribe_options.h"
+#include "ros/callback_queue.h"
 #include <boost/thread/mutex.hpp>
 #include "std_msgs/Bool.h"
+#include "brass_gazebo_battery/SetCharge.h"
+#include "brass_gazebo_battery/SetCharging.h"
 
 namespace gazebo
 {
@@ -29,7 +32,11 @@ namespace gazebo
 
     private: double OnUpdateVoltage(const common::BatteryPtr &_battery);
 
-    public: bool SetCharging(const std_msgs::BoolConstPtr &_msg);
+    public: bool SetCharging(brass_gazebo_battery::SetCharging::Request& req,
+                             brass_gazebo_battery::SetCharging::Response& res);
+
+    public: bool SetCharge(brass_gazebo_battery::SetCharge::Request& req,
+                             brass_gazebo_battery::SetCharge::Response& res);
 
     // Connection to the World Update events.
     protected: event::ConnectionPtr updateConnection;
@@ -80,6 +87,7 @@ namespace gazebo
     protected: ros::Publisher motor_power;
 
     protected: ros::ServiceServer set_charging;
+    protected: ros::ServiceServer set_charge;
 
     protected: boost::mutex lock;
 
