@@ -52,6 +52,7 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 
     this->set_charging = this->rosNode->advertiseService(this->model->GetName() + "/set_charging", &BatteryPlugin::SetCharging, this);
     this->set_charge = this->rosNode->advertiseService(this->model->GetName() + "/set_charge", &BatteryPlugin::SetCharge, this);
+    this->set_coefficients = this->rosNode->advertiseService(this->model->GetName() + "/set_model_coefficients", &BatteryPlugin::SetModelCoefficients, this);
 
     std::string linkName = _sdf->Get<std::string>("link_name");
     this->link = this->model->GetLink(linkName);
@@ -136,9 +137,19 @@ bool BatteryPlugin::SetCharging(brass_gazebo_battery::SetCharging::Request& req,
 bool BatteryPlugin::SetCharge(brass_gazebo_battery::SetCharge::Request &req,
                               brass_gazebo_battery::SetCharge::Response &res)
 {
-
     lock.lock();
     this->q = req.charge;
+    lock.unlock();
+    res.result = true;
+    return true;
+}
+
+bool BatteryPlugin::SetModelCoefficients(brass_gazebo_battery::SetCoef::Request &req,
+                                         brass_gazebo_battery::SetCoef::Response &res)
+{
+    lock.lock();
+    this->e0 = req.constant_coef;
+    this->e1 = req.linear_coef;
     lock.unlock();
     res.result = true;
     return true;

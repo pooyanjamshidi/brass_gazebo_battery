@@ -14,6 +14,7 @@
 #include "std_msgs/Bool.h"
 #include "brass_gazebo_battery/SetCharge.h"
 #include "brass_gazebo_battery/SetCharging.h"
+#include "brass_gazebo_battery/SetCoef.h"
 
 namespace gazebo
 {
@@ -37,6 +38,9 @@ namespace gazebo
 
     public: bool SetCharge(brass_gazebo_battery::SetCharge::Request& req,
                              brass_gazebo_battery::SetCharge::Response& res);
+
+    public: bool SetModelCoefficients(brass_gazebo_battery::SetCoef::Request& req,
+                                      brass_gazebo_battery::SetCoef::Response& res);
 
     // Connection to the World Update events.
     protected: event::ConnectionPtr updateConnection;
@@ -88,6 +92,7 @@ namespace gazebo
 
     protected: ros::ServiceServer set_charging;
     protected: ros::ServiceServer set_charge;
+    protected: ros::ServiceServer set_coefficients;
 
     protected: boost::mutex lock;
 

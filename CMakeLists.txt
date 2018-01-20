@@ -87,6 +87,7 @@ add_service_files(
   FILES
   SetCharge.srv
   SetCharging.srv
+  SetCoef.srv
 )
 
 ## Generate actions in the 'action' folder
