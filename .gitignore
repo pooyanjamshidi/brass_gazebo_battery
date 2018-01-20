@@ -1,3 +1,7 @@
+# temp folders
+tmp/
+temp/
+
 # mac stuff
 .DS_Store
 
