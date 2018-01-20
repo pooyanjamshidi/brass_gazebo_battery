@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<robot name="sensor_power" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find cp_gazebo)/robot_description/cp1/urdf/power_gazebo.urdf.xacro"/>
+</robot>

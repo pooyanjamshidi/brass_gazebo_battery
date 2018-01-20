@@ -1,0 +1,5 @@
+shutdown_costmaps: True
+recovery_behavior_enabled: False
+clearing_rotation_allowed: False
+obstacle_range: 0.05
+global_costmap/obstacle_layer/enabled: False

@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<robot name="sensor_kinect" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find turtlebot_description)/urdf/turtlebot_gazebo.urdf.xacro"/>
+  <xacro:include filename="$(find turtlebot_description)/urdf/turtlebot_properties.urdf.xacro"/>
+  
+  <xacro:property name="kinect_cam_py" value="-0.0125"/>
+  <!-- Parameterised in part by the values in turtlebot_properties.urdf.xacro -->
+  <xacro:macro name="sensor_kinect" params="parent">
+
+
+   <joint name="kinect_y_joint" type="continuous">
+      <parent link="${parent}"/>
+      <child link="kinect_y_joint_link"/>
+      <origin xyz="-0.087 -0.0125 0.2870" rpy="${cam_or} ${cam_op} ${cam_oy}"/>
+      
+      <axis xyz="0 1 0"/>
+      <dynamics damping="10" friction="1000000.0"/>
+    </joint>
+    <link name="kinect_y_joint_link">
+      <collision>
+        <geometry>
+          <cylinder length="0.0206" radius="0.0350"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="0.0001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx=".1" ixy="0.0" ixz="0.0"
+                 iyy=".1" iyz="0.0"
+                 izz=".1" />
+      </inertial>
+    </link>
+
+
+ <joint name="kinect_x_joint" type="continuous">
+      <parent link="kinect_y_joint_link"/>
+      <child link="kinect_x_joint_link"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit effort="0" velocity="0.0"/>
+      <dynamics damping="100" friction="1000000.0"/>
+    </joint>
+
+
+  <link name="kinect_x_joint_link">
+     <collision>
+        <geometry>
+          <cylinder length="0.0206" radius="0.0350"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="0.0001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx=".1" ixy="0.0" ixz="0.0"
+                 iyy=".1" iyz="0.0"
+                 izz=".1" />
+      </inertial>
+    </link>
+
+
+<joint name="kinect_xr_joint" type="prismatic">
+      <parent link="kinect_x_joint_link"/>
+      <child link="kinect_xr_joint_link"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit effort="0.01" velocity="0.01" lower="-3" upper="3" />
+      <dynamics damping="100" friction="1000000.0"/>
+    </joint>
+    <link name="kinect_xr_joint_link">
+      <collision>
+        <geometry>
+          <cylinder length="0.0206" radius="0.0350"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="0.0001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx=".01" ixy="0.0" ixz="0.0"
+                 iyy=".01" iyz="0.0"
+                 izz=".01" />
+      </inertial>
+    </link>
+
+
+<joint name="kinect_yr_joint" type="prismatic">
+      <parent link="kinect_xr_joint_link"/>
+      <child link="kinect_yr_joint_link"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit effort="0" velocity="0.0" lower="-3" upper="3" />
+      <dynamics damping="100.0" friction="1000000.0"/>
+    </joint>
+    <link name="kinect_yr_joint_link">
+      <collision>
+        <geometry>
+          <cylinder length="0.0206" radius="0.0350"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="0.0001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx=".1" ixy="0.0" ixz="0.0"
+                 iyy=".1" iyz="0.0"
+                 izz=".1" />
+      </inertial>
+    </link>
+
+
+<joint name="kinect_zr_joint" type="fixed">
+      <parent link="kinect_yr_joint_link"/>
+      <child link="kinect_zr_joint_link"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit effort="0.00" velocity="0.00" lower="-3" upper="3" />
+      <dynamics damping="1" friction="1000000.0"/>
+
+    </joint>
+    <link name="kinect_zr_joint_link">
+      <collision>
+        <geometry>
+          <cylinder length="0.0206" radius="0.0350"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="0.0001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx=".1" ixy="0" ixz="0"
+                 iyy=".1" iyz="0"
+                 izz="0" />
+      </inertial>
+    </link>
+
+    <joint name="camera_rgb_joint" type="continuous">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="kinect_zr_joint_link"/>
+      <child link="camera_rgb_frame" />
+      <axis xyz="0 0 1"/>
+      <dynamics damping="1" friction="100000.0"/>
+    </joint>
+    <link name="camera_rgb_frame"/>
+    
+    <gazebo reference="camera_rgb_frame">
+      <gravity>0</gravity>
+  </gazebo>
+
+    <joint name="camera_rgb_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+      <parent link="camera_rgb_frame" />
+      <child link="camera_rgb_optical_frame" />
+    </joint>
+    <link name="camera_rgb_optical_frame"/>
+
+    <joint name="camera_joint" type="fixed">
+      <origin xyz="-0.031 ${-kinect_cam_py} -0.016" rpy="0 0 0"/>
+      <parent link="camera_rgb_frame"/>
+      <child link="camera_link"/>
+    </joint>  
+      <link name="camera_link">
+      <visual>
+       <origin xyz="0 0 0" rpy="0 0 ${M_PI/2}"/>
+        <geometry>
+         <mesh filename="package://turtlebot_description/meshes/sensors/kinect.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.07271 0.27794 0.073"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.564" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.003881243" ixy="0.0" ixz="0.0"
+                 iyy="0.000498940" iyz="0.0"
+                 izz="0.003879257" />
+      </inertial>
+    </link>
+
+    <!-- The fixed joints & links below are usually published by static_transformers launched by the OpenNi launch 
+         files. However, for Gazebo simulation we need them, so we add them here.
+         (Hence, don't publish them additionally!) -->
+  <joint name="camera_depth_joint" type="fixed">
+    <origin xyz="0 ${2 * -kinect_cam_py} 0" rpy="0 0 0" />
+    <parent link="camera_rgb_frame" />
+    <child link="camera_depth_frame" />
+  </joint>
+  <link name="camera_depth_frame"/>
+
+  <joint name="camera_depth_optical_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+    <parent link="camera_depth_frame" />
+    <child link="camera_depth_optical_frame" />
+  </joint>
+  <link name="camera_depth_optical_frame"/>
+  
+  <!-- Kinect sensor for simulation -->
+  <turtlebot_sim_3dsensor/>
+  </xacro:macro>
+</robot>

@@ -1,0 +1,82 @@
+<!-- Launch file for challenge problem 1 -->
+<!-- TODO:
+      - Take out hardwired paths
+      - Check to make sure that the custom_param_file is working (and that the parameters are set)
+      - Check to see if the map maze and gazebo maze are aligned 
+-->
+<launch>
+  <!-- Parameters for the kobuki base with the kinect sensor -->
+  <arg name="base" value="$(optenv TURTLEBOT_BASE kobuki)"/>
+  <arg name="3d_sensor" value="$(optenv TURTLEBOT_3D_SENSOR kinect)"/>
+  <arg name="stacks" value="$(optenv TURTLEBOT_STACKS circles)"/>
+  <!-- The param file is turning off various navigation options on move_base to
+       hamper the navigation -->
+  <arg name="custom_param_file" value="$(find cp1_gazebo)/param/move_base_params.yaml"/>
+
+  <!-- This is the map file that will be used for planning -->
+  <arg name="map_file" value="$(find cp1_gazebo)/maps/Wean-entire-floor4.yaml"/>
+
+
+  <!-- Start the gazebo world, so that obstacles can be mapped -->
+  <!-- NOTE: The maze in the world might not be needed if the map server is required -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find cp1_gazebo)/worlds/Wean-complete-floor4-blocked.world"/>
+    <arg name="gui" value="false"/>
+    <arg name="headless" value="true"/>
+  </include>
+
+  <!-- Spawn the turtlebot -->
+  <include file="$(find turtlebot_gazebo)/launch/includes/$(arg base).launch.xml">
+      <arg name="base" value="$(arg base)"/>
+      <arg name="3d_sensor" value="$(arg 3d_sensor)"/>
+      <arg name="stacks" value="$(arg stacks)"/>
+  </include>
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="30.0"/>
+  </node>
+
+  <!-- Fake the laser with the kinect ? -->
+  <node pkg="nodelet" type="nodelet" name="laserscan_nodelet_manager" args="manager"/>
+  <node pkg="nodelet" type="nodelet" name="depthimage_to_laserscan"
+        args="load depthimage_to_laserscan/DepthImageToLaserScanNodelet laserscan_nodelet_manager">
+    <param name="scan_height" value="10"/>
+    <param name="output_frame_id" value="/camera_depth_frame"/>
+    <param name="range_min" value="0.45"/>
+    <remap from="image" to="/camera/depth/image_raw"/>
+    <remap from="scan" to="/scan"/>
+  </node>
+
+  <!-- start the map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <!-- This is the initial pose (for AMCL) of the turtlebot -->
+  <arg name="initial_pose_x" default="0.0"/> 
+  <arg name="initial_pose_y" default="0.0"/> 
+  <arg name="initial_pose_a" default="0.0"/>
+  <include file="$(find turtlebot_navigation)/launch/includes/amcl.launch.xml">
+    <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
+    <arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
+    <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
+  </include>
+
+  <!-- Launch move base -->
+  <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml">
+    <arg name="custom_param_file" value="$(arg custom_param_file)"/>
+  </include>
+
+  <!-- Launch Euler conversion node -->
+  <node name="euler_conversion" pkg="euler_orientation" type="euler_orientation.py" output="screen">
+  </node>
+
+  <!-- Launch instruction graph, with initial instruction files -->
+  <node name="ig_interpreter" pkg="ig_action_server" type="ig_server.py" output="screen">
+
+  </node>
+  <node name="brasscomms" pkg="brasscomms" type="brasscomms.py" output="screen">
+  </node>
+<!--
+  <node name="brass_ll_logger" pkg="brass_logger" type="brass_logger.py" output="screen">
+  </node>
+-->
+</launch>

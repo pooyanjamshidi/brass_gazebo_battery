@@ -1,0 +1,11 @@
+{
+    "start_loc" : "l1",
+    "start_yaw" : 0.0,
+    "target_loc" : "l6",
+    "enable_adaptation" : "CP1_NoAdaptation",
+
+    "initial_voltage" : 166,
+    "initial_obstacle" : true,
+    "initial_obstacle_location" : {"x":5.0, "y":10.0},
+    "sensor_perturbation" : {"x" : 0, "y": 0, "z" : 0, "p" : 0, "w" : 0, "r" : 0}
+}

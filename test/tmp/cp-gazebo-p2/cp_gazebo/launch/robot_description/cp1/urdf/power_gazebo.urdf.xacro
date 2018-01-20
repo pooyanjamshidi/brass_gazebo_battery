@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<robot name="power_gazebo" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="turtlebot_power_sim">
+  	<gazebo>
+  		<plugin name="turtlebot_power_simulator" filename="libenergy_monitor.so">
+  		</plugin>
+  	</gazebo>
+  </xacro:macro>
+  <turtlebot_power_sim />
+</robot>
