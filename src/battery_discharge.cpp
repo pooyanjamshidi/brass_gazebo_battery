@@ -72,9 +72,11 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 
     this->e0 = _sdf->Get<double>("constant_coef");
     this->e1 = _sdf->Get<double>("linear_coef");
+    this->q0 = _sdf->Get<double>("initial_charge");
     this->c = _sdf->Get<double>("capacity");
     this->r = _sdf->Get<double>("resistance");
     this->tau = _sdf->Get<double>("smooth_current_tau");
+
     std::string batteryName = _sdf->Get<std::string>("battery_name");
     // Creates the battery
     this->battery = this->link->Battery(batteryName);
@@ -88,6 +90,8 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     #endif
 }
 
+// This is for in initialization purposes and is called once after Load
+// So explanation about Gazebo Init are here: http://playerstage.sourceforge.net/doc/Gazebo-manual-0.5-html/plugin_models.html
 void BatteryPlugin::Init()
 {
     this->q = this->q0;
@@ -122,16 +126,16 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
     this->sim_time_now = this->world->GetSimTime().Double();
 
     #ifdef BATTERY_DEBUG
-        gzdbg << "Current charge:" << this->q << "at:" << this->sim_time_now << "\n";
+        gzdbg << "Current charge:" << this->q << ", at:" << this->sim_time_now << "\n";
     #endif
 
     this->et = this->e0 + this->e1 * (1 - this->q / this->c) - this->r * this->ismooth;
 
     #ifdef BATTERY_DEBUG
-        gzdbg << "Current voltage:" << this->et << "at:" << this->sim_time_now << "\n";
+        gzdbg << "Current voltage:" << this->et << ", at:" << this->sim_time_now << "\n";
     #endif
 
-    //Turn off motor
+    //Turn off the motor
     if (this->q <= 0)
     {
         this->sim_time_now = this->world->GetSimTime().Double();
