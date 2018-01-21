@@ -67,7 +67,6 @@
                 <battery_name>linear_battery</battery_name>
                 <power_load>6.6</power_load>
             </plugin>
-            <plugin name="hello_world" filename="libhello_world.so"/>
         </model>
     </world>
 </sdf>
