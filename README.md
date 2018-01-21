@@ -1,5 +1,7 @@
 # Functionality
-A Gazebo plugin that simulate an open-circuit battery model for challenge problem 1 of the BRASS Project.
+A Gazebo plugin that simulate an open-circuit battery model for challenge problem 1 of the BRASS Project. This power model simulates the power consumption of a robot. The amount of power consumed by each component of a robot depends on its usage. The battery its current state of the charge after each simulation iteration determined by `dt` int he code. The battery plugin takes the power loads for each components in the robot that consume energy and current voltage value of the battery (which updates according to the open circuit voltage model) as inputs and returns a new voltage value.
+
+
 
 # Support
 This plugin is tested for ROS kinetic and Gazebo 7.8.1.
@@ -10,11 +12,18 @@ Create the build directory:
 mkdir ~/catkin_ws/src/brass_gazebo_battery/build
 cd ~/catkin_ws/src/brass_gazebo_battery/build
 ```
+
+Make sure you have sourced ROS before compiling the code:
+```bash
+source /opt/ros/<DISTRO>/setup.bash
+```
+
 Compile the code:
 ```bash
 cmake ../
 make    
 ```
+
 Compiling will result in a shared library, `~/catkin_ws/src/brass_gazebo_battery/build/devel/lib/libbattery_discharge.so`, that can be inserted in a Gazebo simulation.
 
 Lastly, add your library path to the `GAZEBO_PLUGIN_PATH`:
@@ -60,7 +69,17 @@ cd ~/catkin_ws/src/brass_gazebo_battery/
 gazebo test/worlds/p2-cp1.world --verbose
 ```
 
-# Services
+# Architecture
+
+
+# ROS communications and control
 TODO
 
+# ROS Services
+TODO
 
+# Acknowledgements
+We used/inspired by existing theory of open circuit battery model. This battery discharge/charge plugin uses the Gazebo `Battery` class which is shipped by the default simulator.
+
+
+Further references: [r1](http://security.livewatch.com/forum-ref/ohms-law-calculator), [r2](http://batteriesbyfisher.com/determining-charge-time).

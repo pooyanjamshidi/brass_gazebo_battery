@@ -778,12 +778,14 @@
             <capacity>1.2009</capacity>
             <resistance>0.061523</resistance>
             <smooth_current_tau>1.9499</smooth_current_tau>
-            <charge_rate>2</charge_rate> <!-- we have a charge -->
+            <charge_rate>2</charge_rate>
+          <!-- If you charge your battery at a 10-amp rate and you need to replace 36 amp-hours in the battery.
+          To determine how long (in hours) you will need to charge your battery, divided 36 by 10 = 3.6 or 3.6 hours to recharge your battery. -->
         </plugin>
         <plugin name="consumer" filename="libbattery_consumer.so">
             <link_name>body</link_name>
             <battery_name>brass_battery</battery_name>
-            <power_load>6.6</power_load>
+            <power_load>60.6</power_load>
         </plugin>
     </model>
     <gui fullscreen='0'>
