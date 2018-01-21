@@ -5,9 +5,28 @@ A Gazebo plugin that simulate an open-circuit battery model for challenge proble
 This plugin is tested for ROS kinetic and Gazebo 7.8.1.
 
 # Build
-```$bash
+Create the build directory:
+```bash
+mkdir ~/catkin_ws/src/brass_gazebo_battery/build
+cd ~/catkin_ws/src/brass_gazebo_battery/build
+```
+Compile the code:
+```bash
 cmake ../
 make    
+```
+Compiling will result in a shared library, `~/catkin_ws/src/brass_gazebo_battery/build/devel/lib/libbattery_discharge.so`, that can be inserted in a Gazebo simulation.
+
+Lastly, add your library path to the `GAZEBO_PLUGIN_PATH`:
+```bash
+export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/catkin_ws/src/brass_gazebo_battery/build/devel/lib
+```
+
+# Build by catkin
+Build the plugin by going to the base of your work space and running catkin:
+```bash
+cd ~/catkin_ws
+catkin_make
 ```
 
 # Usage
@@ -35,7 +54,13 @@ The xml code could be linked to any model in a new `.world` file.
 </plugin>
 ```
 
-# Commands
+# Run the Plugin
+```bash
+cd ~/catkin_ws/src/brass_gazebo_battery/
+gazebo test/worlds/p2-cp1.world --verbose
+```
+
+# Services
 TODO
 
 
