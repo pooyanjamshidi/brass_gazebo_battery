@@ -30,6 +30,19 @@ BatteryPlugin::BatteryPlugin()
 
     this->iraw = 0.0;
     this->ismooth = 0.0;
+
+    #ifdef BATTERY_DEBUG
+        gzdbg << "Constructed BatteryPlugin and initialized parameters. \n";
+    #endif
+    ROS_INFO_STREAM("BRASS CP1 battery is loaded.");
+}
+
+BatteryPlugin::~BatteryPlugin()
+{
+#ifdef BATTERY_DEBUG
+    gzdbg << "Destructing BatteryPlugin and removing the ros node. \n";
+#endif
+    this->rosNode->shutdown();
 }
 
 void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
@@ -45,8 +58,15 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     this->model = _model;
     this->world = _model->GetWorld();
 
+    this->sim_time_now = this->world->GetSimTime().Double();
+
+    #ifdef BATTERY_DEBUG
+        gzdbg << "Loading the BatteryPlugin at time:" << this->sim_time_now << "\n";
+    #endif
+
+
     // Create ros node and publish stuff there!
-    this->rosNode.reset(new ros::NodeHandle(_sdf->Get<std::string>("ros_node")));
+    this->rosNode.reset(new ros::NodeHandle(_sdf->Get<std::string>("battery_discharge_client")));
     this->motor_power = this->rosNode->advertise<kobuki_msgs::MotorPower>("/mobile_base/commands/motor_power", 1);
     this->charge_state = this->rosNode->advertise<std_msgs::Float64>(this->world->GetName() + "/charge_level", 1);
 
@@ -67,6 +87,12 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     this->battery = this->link->Battery(batteryName);
     // Specifying a custom update function
     this->battery->SetUpdateFunc(std::bind(&BatteryPlugin::OnUpdateVoltage, this, std::placeholders::_1));
+
+    this->sim_time_now = this->world->GetSimTime().Double();
+
+    #ifdef BATTERY_DEBUG
+        gzdbg << "Loaded the BatteryPlugin at time:" << this->sim_time_now << "\n";
+    #endif
 }
 
 void BatteryPlugin::Init()
@@ -100,11 +126,27 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
 
     this->q = this->q - GZ_SEC_TO_HOUR(dt * this->ismooth);
 
+    this->sim_time_now = this->world->GetSimTime().Double();
+
+    #ifdef BATTERY_DEBUG
+        gzdbg << "Current charge:" << this->q << "at:" << this->sim_time_now << "\n";
+    #endif
+
     this->et = this->e0 + this->e1 * (1 - this->q / this->c) - this->r * this->ismooth;
+
+    #ifdef BATTERY_DEBUG
+        gzdbg << "Current voltage:" << this->et << "at:" << this->sim_time_now << "\n";
+    #endif
 
     //Turn off motor
     if (this->q <= 0)
     {
+        this->sim_time_now = this->world->GetSimTime().Double();
+
+        #ifdef BATTERY_DEBUG
+            gzdbg << "Out of juice at:" << this->sim_time_now << "\n";
+        #endif
+
         this->q = 0;
         kobuki_msgs::MotorPower power_msg;
         power_msg.state = 0;
@@ -129,6 +171,16 @@ bool BatteryPlugin::SetCharging(brass_gazebo_battery::SetCharging::Request& req,
 
     lock.lock();
     this->charging = req.charging;
+    if (this->charging) {
+#ifdef BATTERY_DEBUG
+        gzdbg << "Bot is charging" << "\n";
+#endif
+    }
+    else{
+#ifdef BATTERY_DEBUG
+        gzdbg << "Bot disconnected from the charging station" << "\n";
+#endif
+    }
     lock.unlock();
     res.result = true;
     return true;
@@ -139,6 +191,9 @@ bool BatteryPlugin::SetCharge(brass_gazebo_battery::SetCharge::Request &req,
 {
     lock.lock();
     this->q = req.charge;
+    #ifdef BATTERY_DEBUG
+        gzdbg << "Received charge:" << this->q << "\n";
+    #endif
     lock.unlock();
     res.result = true;
     return true;
@@ -150,6 +205,9 @@ bool BatteryPlugin::SetModelCoefficients(brass_gazebo_battery::SetCoef::Request 
     lock.lock();
     this->e0 = req.constant_coef;
     this->e1 = req.linear_coef;
+    #ifdef BATTERY_DEBUG
+        gzdbg << "Power model is changed, new coefficients (constant, linear):" << this->e0 << this->e1 << "\n";
+    #endif
     lock.unlock();
     res.result = true;
     return true;

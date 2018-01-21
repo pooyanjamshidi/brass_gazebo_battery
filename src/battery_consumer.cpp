@@ -4,7 +4,7 @@
 
 using namespace gazebo;
 
-// GZ_REGISTER_MODEL_PLUGIN(BatteryConsumerPlugin);
+GZ_REGISTER_MODEL_PLUGIN(BatteryConsumerPlugin);
 
 BatteryConsumerPlugin::BatteryConsumerPlugin() : consumerId(-1)
 {
@@ -20,6 +20,11 @@ void BatteryConsumerPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 {
     // TODO: checking whether these elements exists
 
+
+    #ifdef CONSUMER_DEBUG
+        gzdbg << "started loading consumer \n";
+    #endif
+
     std::string linkName = _sdf->Get<std::string>("link_name");
     physics::LinkPtr link = _model->GetLink(linkName);
 
@@ -31,4 +36,9 @@ void BatteryConsumerPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     double powerLoad = _sdf->Get<double>("power_load");
     this->consumerId = this->battery->AddConsumer();
     this->battery->SetPowerLoad(this->consumerId, powerLoad);
+
+    #ifdef CONSUMER_DEBUG
+        gzdbg << "consumer loaded \n";
+    #endif
+
 }

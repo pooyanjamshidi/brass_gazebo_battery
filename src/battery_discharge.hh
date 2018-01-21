@@ -16,6 +16,10 @@
 #include "brass_gazebo_battery/SetCharging.h"
 #include "brass_gazebo_battery/SetCoef.h"
 
+#define BATTERY_DEBUG
+#define DBG_INTERVAL 5.0
+
+
 namespace gazebo
 {
     /// \brief A plugin that simulate BRASS CP1 battery model: discharge and charge according to power models
@@ -23,6 +27,8 @@ namespace gazebo
     {
     /// \brief Constructor
     public: BatteryPlugin();
+
+    public: ~BatteryPlugin();
 
     // Inherited.
     public: virtual void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
@@ -97,6 +103,8 @@ namespace gazebo
     protected: boost::mutex lock;
 
     protected: bool charging;
+
+    protected: double sim_time_now;
 
     };
 }

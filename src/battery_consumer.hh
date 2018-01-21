@@ -4,6 +4,8 @@
 #include "gazebo/common/Plugin.hh"
 #include "gazebo/common/CommonTypes.hh"
 
+#define CONSUMER_DEBUG
+
 namespace gazebo
 {
     class GAZEBO_VISIBLE BatteryConsumerPlugin : public ModelPlugin
