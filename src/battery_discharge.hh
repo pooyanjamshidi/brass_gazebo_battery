@@ -3,7 +3,6 @@
 
 #include <map>
 #include <string>
-
 #include "gazebo/common/Plugin.hh"
 #include "gazebo/common/CommonTypes.hh"
 #include "gazebo/physics/physics.hh"
@@ -23,7 +22,7 @@
 namespace gazebo
 {
     /// \brief A plugin that simulate BRASS CP1 battery model: discharge and charge according to power models
-    class BatteryPlugin : public ModelPlugin
+    class GAZEBO_VISIBLE BatteryPlugin : public ModelPlugin
     {
     /// \brief Constructor
     public: BatteryPlugin();
@@ -110,5 +109,3 @@ namespace gazebo
 }
 
 #endif //BRASS_GAZEBO_BATTERY_BATTERY_DISCHARGE_H
-
-

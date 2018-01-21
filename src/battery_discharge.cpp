@@ -1,16 +1,10 @@
 #include "gazebo/common/Time.hh"
 #include "gazebo/common/Plugin.hh"
-#include "gazebo/common/Assert.hh"
 #include "gazebo/common/Battery.hh"
 #include "gazebo/physics/physics.hh"
 #include "battery_discharge.hh"
-#include "ros/ros.h"
-#include "gazebo/common/CommonTypes.hh"
-#include <string>
-#include <functional>
 #include <kobuki_msgs/MotorPower.h>
 #include "std_msgs/Float64.h"
-#include "std_msgs/Bool.h"
 
 using namespace gazebo;
 
@@ -34,39 +28,38 @@ BatteryPlugin::BatteryPlugin()
     #ifdef BATTERY_DEBUG
         gzdbg << "Constructed BatteryPlugin and initialized parameters. \n";
     #endif
+
     ROS_INFO_STREAM("BRASS CP1 battery is loaded.");
 }
 
 BatteryPlugin::~BatteryPlugin()
 {
-#ifdef BATTERY_DEBUG
-    gzdbg << "Destructing BatteryPlugin and removing the ros node. \n";
-#endif
+    #ifdef BATTERY_DEBUG
+        gzdbg << "Destructing BatteryPlugin and removing the ros node. \n";
+    #endif
     this->rosNode->shutdown();
 }
 
 void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 {
+    #ifdef BATTERY_DEBUG
+        gzdbg << "Loading the BatteryPlugin \n";
+    #endif
+
     // check if the ros is up!
-    if (! ros::isInitialized()){
+    if (!ros::isInitialized()){
         int argc = 0;
         char **argv = NULL;
-        ros::init(argc, argv, "battery_discharge_client", ros::init_options::NoSigintHandler);
+        ros::init(argc, argv, _sdf->Get<std::string>("ros_node"), ros::init_options::NoSigintHandler);
     }
-
 
     this->model = _model;
     this->world = _model->GetWorld();
 
     this->sim_time_now = this->world->GetSimTime().Double();
 
-    #ifdef BATTERY_DEBUG
-        gzdbg << "Loading the BatteryPlugin at time:" << this->sim_time_now << "\n";
-    #endif
-
-
     // Create ros node and publish stuff there!
-    this->rosNode.reset(new ros::NodeHandle(_sdf->Get<std::string>("battery_discharge_client")));
+    this->rosNode.reset(new ros::NodeHandle(_sdf->Get<std::string>("ros_node")));
     this->motor_power = this->rosNode->advertise<kobuki_msgs::MotorPower>("/mobile_base/commands/motor_power", 1);
     this->charge_state = this->rosNode->advertise<std_msgs::Float64>(this->world->GetName() + "/charge_level", 1);
 
@@ -168,18 +161,17 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
 bool BatteryPlugin::SetCharging(brass_gazebo_battery::SetCharging::Request& req,
                                 brass_gazebo_battery::SetCharging::Response& res)
 {
-
     lock.lock();
     this->charging = req.charging;
     if (this->charging) {
-#ifdef BATTERY_DEBUG
-        gzdbg << "Bot is charging" << "\n";
-#endif
+    #ifdef BATTERY_DEBUG
+            gzdbg << "Bot is charging" << "\n";
+    #endif
     }
     else{
-#ifdef BATTERY_DEBUG
-        gzdbg << "Bot disconnected from the charging station" << "\n";
-#endif
+    #ifdef BATTERY_DEBUG
+            gzdbg << "Bot disconnected from the charging station" << "\n";
+    #endif
     }
     lock.unlock();
     res.result = true;

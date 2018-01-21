@@ -768,7 +768,7 @@
                 <voltage>12.592</voltage>
             </battery>
         </link>
-        <!-- <plugin name="battery" filename="libbattery_discharge.so">
+        <plugin name="battery" filename="libbattery_discharge.so">
             <ros_node>battery_monitor_client</ros_node>
             <link_name>body</link_name>
             <battery_name>brass_battery</battery_name>
@@ -779,7 +779,7 @@
             <resistance>0.061523</resistance>
             <smooth_current_tau>1.9499</smooth_current_tau>
             <charge_rate>0.2</charge_rate>
-        </plugin>-->
+        </plugin>
         <plugin name="consumer" filename="libbattery_consumer.so">
             <link_name>body</link_name>
             <battery_name>brass_battery</battery_name>

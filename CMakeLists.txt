@@ -150,10 +150,15 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+IF(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
+    ADD_DEFINITIONS(-fPIC)
+ENDIF()
+
 add_library(battery_discharge SHARED src/battery_discharge.cpp)
 add_dependencies(battery_discharge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(battery_discharge ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(battery_discharge ${roscpp_LIBRARIES} ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
 
+# Important: add ${roscpp_LIBRARIES} to the target_link_library if you are using ros libraries as we use in the battery plugin
 add_library(battery_consumer SHARED src/battery_consumer.cpp)
 add_dependencies(battery_consumer ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(battery_consumer ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
