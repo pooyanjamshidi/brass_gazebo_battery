@@ -778,7 +778,7 @@
             <capacity>1.2009</capacity>
             <resistance>0.061523</resistance>
             <smooth_current_tau>1.9499</smooth_current_tau>
-            <charge_rate>0.2</charge_rate>
+            <charge_rate>2</charge_rate> <!-- we have a charge -->
         </plugin>
         <plugin name="consumer" filename="libbattery_consumer.so">
             <link_name>body</link_name>

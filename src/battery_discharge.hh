@@ -71,6 +71,10 @@ namespace gazebo
     // Initial battery charge in Ah.
     protected: double q0;
 
+    // Charge rate in A
+    // More description about charge rate: http://batteriesbyfisher.com/determining-charge-time
+    protected: double qt;
+
     // Battery capacity in Ah.
     protected: double c;
 

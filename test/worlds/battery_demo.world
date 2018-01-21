@@ -55,7 +55,7 @@
                 <link_name>body</link_name>
                 <battery_name>linear_battery</battery_name>
                 <constant_coef>12.694</constant_coef>
-                <linear_coef>-3.1424</linear_coef>
+                <linear_coef>-100.1424</linear_coef>
                 <initial_charge>1.1665</initial_charge>
                 <capacity>1.2009</capacity>
                 <resistance>0.061523</resistance>

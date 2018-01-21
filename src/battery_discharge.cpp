@@ -121,7 +121,14 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
 
     this->ismooth = this->ismooth + k * (this->iraw - this->ismooth);
 
-    this->q = this->q - GZ_SEC_TO_HOUR(dt * this->ismooth);
+    if (!this->charging)
+    {
+        this->q = this->q - GZ_SEC_TO_HOUR(dt * this->ismooth);
+    }
+    else
+    {
+        this->q = this->q + this-> GZ_SEC_TO_HOUR(dt * this->qt);
+    }
 
     this->sim_time_now = this->world->GetSimTime().Double();
 
