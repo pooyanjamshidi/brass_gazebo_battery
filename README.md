@@ -2,7 +2,6 @@
 A Gazebo plugin that simulate an open-circuit battery model for challenge problem 1 of the BRASS Project. This power model simulates the power consumption of a robot. The amount of power consumed by each component of a robot depends on its usage. The battery its current state of the charge after each simulation iteration determined by `dt` int he code. The battery plugin takes the power loads for each components in the robot that consume energy and current voltage value of the battery (which updates according to the open circuit voltage model) as inputs and returns a new voltage value.
 
 
-
 # Support
 This plugin is tested for ROS kinetic and Gazebo 7.8.1.
 
@@ -76,7 +75,30 @@ gazebo test/worlds/p2-cp1.world --verbose
 TODO
 
 # ROS Services
-TODO
+Adding ROS services:
+
+```bash
+cd ~/catkin_ws
+catkin_make
+```
+The header files associated to the service can be found here:
+
+```bash
+cd ~/catkin_ws/devel/include/brass_gazebo_battery
+```
+The add the following into the code that want to use the services
+```cpp
+#include "brass_gazebo_battery/SetLoad.h"
+```
+And then add the following declaration:
+```cpp
+ public: bool ServiceName(brass_gazebo_battery::SetLoad::Request& req,
+  brass_gazebo_battery::SetLoad::Response& res);
+```
+The service can then be advertised as follows:
+```cpp
+this->rosNode->advertiseService(this->model->GetName() + "/api", &Plugin::ServiceName, this);
+```
 
 # Acknowledgements
 We used/inspired by existing theory of open circuit battery model. This battery discharge/charge plugin uses the Gazebo `Battery` class which is shipped by the default simulator.

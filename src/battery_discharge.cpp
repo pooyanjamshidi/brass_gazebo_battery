@@ -60,6 +60,8 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 
     // Create ros node and publish stuff there!
     this->rosNode.reset(new ros::NodeHandle(_sdf->Get<std::string>("ros_node")));
+
+    // Publish a topic for motor power and charge level
     this->motor_power = this->rosNode->advertise<kobuki_msgs::MotorPower>("/mobile_base/commands/motor_power", 1);
     this->charge_state = this->rosNode->advertise<std_msgs::Float64>(this->world->GetName() + "/charge_level", 1);
 
@@ -127,7 +129,7 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
     }
     else
     {
-        this->q = this->q + this-> GZ_SEC_TO_HOUR(dt * this->qt);
+        this->q = this->q + GZ_SEC_TO_HOUR(dt * this->qt);
     }
 
     this->sim_time_now = this->world->GetSimTime().Double();
