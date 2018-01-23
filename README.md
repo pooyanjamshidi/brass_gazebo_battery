@@ -75,7 +75,8 @@ gazebo test/worlds/p2-cp1.world --verbose
 TODO
 
 # ROS Services
-Adding ROS services:
+For updating the parameters of the battery model we use ROS services,
+so here we explain how to add new services to the code if needed:
 
 ```bash
 cd ~/catkin_ws
@@ -86,16 +87,19 @@ The header files associated to the service can be found here:
 ```bash
 cd ~/catkin_ws/devel/include/brass_gazebo_battery
 ```
-The add the following into the code that want to use the services
+The add the following header into the code that want to use the services:
+
 ```cpp
 #include "brass_gazebo_battery/SetLoad.h"
 ```
 And then add the following declaration:
+
 ```cpp
  public: bool ServiceName(brass_gazebo_battery::SetLoad::Request& req,
-  brass_gazebo_battery::SetLoad::Response& res);
+                          brass_gazebo_battery::SetLoad::Response& res);
 ```
 The service can then be advertised as follows:
+
 ```cpp
 this->rosNode->advertiseService(this->model->GetName() + "/api", &Plugin::ServiceName, this);
 ```

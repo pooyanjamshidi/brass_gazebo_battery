@@ -726,7 +726,7 @@
       </link>
       <static>1</static>
     </model>
-     <model name="battery_demo_model">
+    <model name="battery_demo_model">
         <pose>0 0 0 0 0 0</pose>
         <static>false</static>
         <link name="body">

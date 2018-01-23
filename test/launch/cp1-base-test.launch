@@ -6,22 +6,22 @@
   <arg name="stacks" value="$(optenv TURTLEBOT_STACKS circles)"/>
   <!-- The param file is turning off various navigation options on move_base to
        hamper the navigation -->
-  <arg name="custom_param_file" value="$(find cp1_gazebo)/param/move_base_params.yaml"/>
+  <arg name="custom_param_file" value="$(find brass_gazebo_battery)/test/tmp/cp_gazebo/param/move_base_params.yaml"/>
 
   <!-- This is the map file that will be used for planning -->
-  <arg name="map_file" value="$(find cp1_gazebo)/maps/wean4.yaml"/>
+  <arg name="map_file" value="$(find brass_gazebo_battery)/test/tmp/cp_gazebo/maps/Wean-entire-floor4.yaml"/>
 
 
   <!-- Start the gazebo world, so that obstacles can be mapped -->
   <!-- NOTE: The maze in the world might not be needed if the map server is required -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find cp1_gazebo)/worlds/Wean4.world"/>
+    <arg name="world_name" value="$(find brass_gazebo_battery)/test/worlds/p2-cp1.world"/>
     <arg name="gui" value="true"/>
     <arg name="headless" value="false"/>
   </include>
 
   <!-- Spawn the turtlebot -->
-  <arg name="urdf_file" default="$(find xacro)/xacro.py '$(find cp_gazebo)/robot_description/cp1/urdf/kobuki_hexagons_kinect.urdf.xacro'" />
+  <arg name="urdf_file" default="$(find xacro)/xacro.py '$(find brass_gazebo_battery)/test/tmp/cp_gazebo/robot_description/cp1/urdf/kobuki_hexagons_kinect.urdf.xacro'" />
   <param name="robot_description" command="$(arg urdf_file)" />
   <node name="spawn_turtlebot_model" pkg="gazebo_ros" type="spawn_model"
         args="-x -40 -y 26.5 -unpause -urdf -param robot_description -model mobile_base"/>
@@ -38,7 +38,7 @@
   <arg name="initial_pose_x" default="0.0"/> 
   <arg name="initial_pose_y" default="0.0"/> 
   <arg name="initial_pose_a" default="0.0"/>
-  <include file="$(find turtlebot_navigation)/launch/includes/amcl.launch.xml">
+  <include file="$(find turtlebot_navigation)/launch/includes/amcl/amcl.launch.xml">
     <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
     <arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
     <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
