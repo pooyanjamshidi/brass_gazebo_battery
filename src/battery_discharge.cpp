@@ -5,6 +5,7 @@
 #include "battery_discharge.hh"
 #include <kobuki_msgs/MotorPower.h>
 #include "std_msgs/Float64.h"
+#include "ROS_debugging.h"
 
 using namespace gazebo;
 
@@ -29,7 +30,7 @@ BatteryPlugin::BatteryPlugin()
         gzdbg << "Constructed BatteryPlugin and initialized parameters. \n";
     #endif
 
-    ROS_INFO_STREAM("BRASS CP1 battery is loaded.");
+    ROS_INFO_STREAM("BRASS CP1 battery is constructed.");
 }
 
 BatteryPlugin::~BatteryPlugin()
@@ -48,6 +49,7 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 
     // check if the ros is up!
     if (!ros::isInitialized()){
+        ROS_INFO_STREAM("Initializing ROS.");
         int argc = 0;
         char **argv = NULL;
         ros::init(argc, argv, _sdf->Get<std::string>("ros_node"), ros::init_options::NoSigintHandler);
@@ -60,6 +62,10 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 
     // Create ros node and publish stuff there!
     this->rosNode.reset(new ros::NodeHandle(_sdf->Get<std::string>("ros_node")));
+    if (this->rosNode->ok())
+    {
+        ROS_GREEN_STREAM("ROS node is up");
+    }
 
     // Publish a topic for motor power and charge level
     this->motor_power = this->rosNode->advertise<kobuki_msgs::MotorPower>("/mobile_base/commands/motor_power", 1);
@@ -80,8 +86,18 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     this->tau = _sdf->Get<double>("smooth_current_tau");
 
     std::string batteryName = _sdf->Get<std::string>("battery_name");
-    // Creates the battery
-    this->battery = this->link->Battery(batteryName);
+
+    if (this->link->BatteryCount() > 0) {
+        // Creates the battery
+        this->battery = this->link->Battery(batteryName);
+        ROS_GREEN_STREAM("Created a battery");
+    }
+    else
+    {
+        ROS_RED_STREAM("There is no battery specification in the link");
+    };
+
+
     // Specifying a custom update function
     this->battery->SetUpdateFunc(std::bind(&BatteryPlugin::OnUpdateVoltage, this, std::placeholders::_1));
 
@@ -90,6 +106,8 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     #ifdef BATTERY_DEBUG
         gzdbg << "Loaded the BatteryPlugin at time:" << this->sim_time_now << "\n";
     #endif
+
+    ROS_GREEN_STREAM("Plugin is fully loaded.");
 }
 
 // This is for in initialization purposes and is called once after Load
@@ -137,6 +155,7 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
     #ifdef BATTERY_DEBUG
         gzdbg << "Current charge:" << this->q << ", at:" << this->sim_time_now << "\n";
     #endif
+    //    ROS_INFO_STREAM(this->q);
 
     this->et = this->e0 + this->e1 * (1 - this->q / this->c) - this->r * this->ismooth;
 

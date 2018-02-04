@@ -37,6 +37,14 @@ cd ~/catkin_ws
 catkin_make
 ```
 
+# Installing the Plugin
+```bash
+cd ~/catkin_ws/src/brass_gazebo_battery/build
+cmake ../
+make
+sudo make install
+```
+
 # Usage
 
 In the brass.world file, `libbattery_discharge.so` is mentioned as a plugin. 

@@ -726,68 +726,68 @@
       </link>
       <static>1</static>
     </model>
-    <model name="battery_demo_model">
-        <pose>0 0 0 0 0 0</pose>
-        <static>false</static>
-        <link name="body">
-            <pose>0 0 0.5 0 0 0</pose>
-            <inertial>
-                <inertia>
-                    <ixx>1.8</ixx>
-                    <ixy>0.0</ixy>
-                    <ixz>0.0</ixz>
-                    <iyy>1.8</iyy>
-                    <iyz>0.0</iyz>
-                    <izz>1.8</izz>
-                </inertia>
-                <mass>10.0</mass>
-            </inertial>
-            <collision name="collision">
-                <geometry>
-                    <box>
-                        <size>1 1 1</size>
-                    </box>
-                </geometry>
-                <surface>
-                    <friction>
-                        <ode>
-                            <mu>0.1</mu>
-                            <mu2>0.1</mu2>
-                        </ode>
-                    </friction>
-                </surface>
-            </collision>
-            <visual name="visual">
-                <geometry>
-                    <box>
-                        <size>1 1 1</size>
-                    </box>
-                </geometry>
-            </visual>
-            <battery name="brass_battery">
-                <voltage>12.592</voltage>
-            </battery>
-        </link>
-        <plugin name="battery" filename="libbattery_discharge.so">
-            <ros_node>battery_monitor_client</ros_node>
-            <link_name>body</link_name>
-            <battery_name>brass_battery</battery_name>
-            <constant_coef>12.694</constant_coef>
-            <linear_coef>-3.1424</linear_coef>
-            <initial_charge>1.1665</initial_charge>
-            <capacity>1.2009</capacity>
-            <resistance>0.061523</resistance>
-            <smooth_current_tau>1.9499</smooth_current_tau>
-            <charge_rate>2</charge_rate>
-          <!-- If you charge your battery at a 10-amp rate and you need to replace 36 amp-hours in the battery.
-          To determine how long (in hours) you will need to charge your battery, divided 36 by 10 = 3.6 or 3.6 hours to recharge your battery. -->
-        </plugin>
-        <plugin name="consumer" filename="libbattery_consumer.so">
-            <link_name>body</link_name>
-            <battery_name>brass_battery</battery_name>
-            <power_load>60.6</power_load>
-        </plugin>
-    </model>
+    <!--<model name="battery_demo_model">-->
+        <!--<pose>0 0 0 0 0 0</pose>-->
+        <!--<static>false</static>-->
+        <!--<link name="body">-->
+            <!--<pose>0 0 0.5 0 0 0</pose>-->
+            <!--<inertial>-->
+                <!--<inertia>-->
+                    <!--<ixx>1.8</ixx>-->
+                    <!--<ixy>0.0</ixy>-->
+                    <!--<ixz>0.0</ixz>-->
+                    <!--<iyy>1.8</iyy>-->
+                    <!--<iyz>0.0</iyz>-->
+                    <!--<izz>1.8</izz>-->
+                <!--</inertia>-->
+                <!--<mass>10.0</mass>-->
+            <!--</inertial>-->
+            <!--<collision name="collision">-->
+                <!--<geometry>-->
+                    <!--<box>-->
+                        <!--<size>1 1 1</size>-->
+                    <!--</box>-->
+                <!--</geometry>-->
+                <!--<surface>-->
+                    <!--<friction>-->
+                        <!--<ode>-->
+                            <!--<mu>0.1</mu>-->
+                            <!--<mu2>0.1</mu2>-->
+                        <!--</ode>-->
+                    <!--</friction>-->
+                <!--</surface>-->
+            <!--</collision>-->
+            <!--<visual name="visual">-->
+                <!--<geometry>-->
+                    <!--<box>-->
+                        <!--<size>1 1 1</size>-->
+                    <!--</box>-->
+                <!--</geometry>-->
+            <!--</visual>-->
+            <!--<battery name="brass_battery">-->
+                <!--<voltage>12.592</voltage>-->
+            <!--</battery>-->
+        <!--</link>-->
+        <!--<plugin name="battery" filename="libbattery_discharge.so">-->
+            <!--<ros_node>battery_monitor_client</ros_node>-->
+            <!--<link_name>body</link_name>-->
+            <!--<battery_name>brass_battery</battery_name>-->
+            <!--<constant_coef>12.694</constant_coef>-->
+            <!--<linear_coef>-3.1424</linear_coef>-->
+            <!--<initial_charge>1.1665</initial_charge>-->
+            <!--<capacity>1.2009</capacity>-->
+            <!--<resistance>0.061523</resistance>-->
+            <!--<smooth_current_tau>1.9499</smooth_current_tau>-->
+            <!--<charge_rate>2</charge_rate>-->
+          <!--&lt;!&ndash; If you charge your battery at a 10-amp rate and you need to replace 36 amp-hours in the battery.-->
+          <!--To determine how long (in hours) you will need to charge your battery, divided 36 by 10 = 3.6 or 3.6 hours to recharge your battery. &ndash;&gt;-->
+        <!--</plugin>-->
+        <!--<plugin name="consumer" filename="libbattery_consumer.so">-->
+            <!--<link_name>body</link_name>-->
+            <!--<battery_name>brass_battery</battery_name>-->
+            <!--<power_load>60.6</power_load>-->
+        <!--</plugin>-->
+    <!--</model>-->
     <gui fullscreen='0'>
       <camera name='user_camera'>
         <pose>0.626978 -4.32423 54.2199 -0.009631 1.54152 2.24602</pose>
