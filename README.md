@@ -83,6 +83,10 @@ gazebo test/worlds/p2-cp1.world --verbose
 TODO
 
 # ROS Services
+
+First create the service description file `.srv` and put it in the `srv` folder. Then declare it in the `CMakeList.txt` in the
+`add_service_files()` section.
+
 For updating the parameters of the battery model we use ROS services,
 so here we explain how to add new services to the code if needed:
 
@@ -116,4 +120,4 @@ this->rosNode->advertiseService(this->model->GetName() + "/api", &Plugin::Servic
 We used/inspired by existing theory of open circuit battery model. This battery discharge/charge plugin uses the Gazebo `Battery` class which is shipped by the default simulator.
 
 
-Further references: [r1](http://security.livewatch.com/forum-ref/ohms-law-calculator), [r2](http://batteriesbyfisher.com/determining-charge-time).
+Further references: [r1](http://security.livewatch.com/forum-ref/ohms-law-calculator), [r2](http://batteriesbyfisher.com/determining-charge-time), [r3](https://electronics.stackexchange.com/questions/24160/how-to-calculate-the-time-of-charging-and-discharging-of-battery).

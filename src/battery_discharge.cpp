@@ -22,6 +22,7 @@ BatteryPlugin::BatteryPlugin()
 
     this->q0 = 0.0;
     this->q = 0.0;
+    this->qt = 0.0;
 
     this->iraw = 0.0;
     this->ismooth = 0.0;
@@ -69,9 +70,10 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 
     // Publish a topic for motor power and charge level
     this->motor_power = this->rosNode->advertise<kobuki_msgs::MotorPower>("/mobile_base/commands/motor_power", 1);
-    this->charge_state = this->rosNode->advertise<std_msgs::Float64>(this->world->GetName() + "/charge_level", 1);
+    this->charge_state = this->rosNode->advertise<std_msgs::Float64>("/mobile_base/commands/charge_level", 1);
 
     this->set_charging = this->rosNode->advertiseService(this->model->GetName() + "/set_charging", &BatteryPlugin::SetCharging, this);
+    this->set_charging_rate = this->rosNode->advertiseService(this->model->GetName() + "/set_charging_rate", &BatteryPlugin::SetChargingRate, this);
     this->set_charge = this->rosNode->advertiseService(this->model->GetName() + "/set_charge", &BatteryPlugin::SetCharge, this);
     this->set_coefficients = this->rosNode->advertiseService(this->model->GetName() + "/set_model_coefficients", &BatteryPlugin::SetModelCoefficients, this);
 
@@ -81,6 +83,7 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     this->e0 = _sdf->Get<double>("constant_coef");
     this->e1 = _sdf->Get<double>("linear_coef");
     this->q0 = _sdf->Get<double>("initial_charge");
+    this->qt = _sdf->Get<double>("charge_rate");
     this->c = _sdf->Get<double>("capacity");
     this->r = _sdf->Get<double>("resistance");
     this->tau = _sdf->Get<double>("smooth_current_tau");
@@ -137,6 +140,7 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
     for (auto powerLoad : _battery->PowerLoads())
         totalpower += powerLoad.second;
 
+    // current = power(Watts)/Voltage
     this->iraw = totalpower / _battery->Voltage();
 
     this->ismooth = this->ismooth + k * (this->iraw - this->ismooth);
@@ -209,6 +213,20 @@ bool BatteryPlugin::SetCharging(brass_gazebo_battery::SetCharging::Request& req,
     res.result = true;
     return true;
 }
+
+bool BatteryPlugin::SetChargingRate(brass_gazebo_battery::SetChargingRate::Request& req,
+                                brass_gazebo_battery::SetChargingRate::Response& res)
+{
+    lock.lock();
+    this->qt = req.charge_rate;
+    #ifdef BATTERY_DEBUG
+            gzdbg << "Charging rate has been changed to:" << this->qt << "\n";
+    #endif
+    lock.unlock();
+    res.result = true;
+    return true;
+}
+
 
 bool BatteryPlugin::SetCharge(brass_gazebo_battery::SetCharge::Request &req,
                               brass_gazebo_battery::SetCharge::Response &res)

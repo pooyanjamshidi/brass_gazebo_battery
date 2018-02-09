@@ -86,6 +86,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_service_files(
   FILES
   SetCharge.srv
+  SetChargingRate.srv
   SetCharging.srv
   SetCoef.srv
   SetLoad.srv

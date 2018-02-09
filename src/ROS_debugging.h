@@ -6,7 +6,7 @@
 #define BRASS_GAZEBO_BATTERY_ROS_DEBUGGING_H
 
 
-// Defining your own ROS stream color
+// Defining customized ROS stream color
 
 namespace pc
 {

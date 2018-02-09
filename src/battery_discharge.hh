@@ -14,6 +14,7 @@
 #include "brass_gazebo_battery/SetCharge.h"
 #include "brass_gazebo_battery/SetCharging.h"
 #include "brass_gazebo_battery/SetCoef.h"
+#include "brass_gazebo_battery/SetChargingRate.h"
 
 #define BATTERY_DEBUG
 #define DBG_INTERVAL 5.0
@@ -46,6 +47,9 @@ namespace gazebo
 
     public: bool SetModelCoefficients(brass_gazebo_battery::SetCoef::Request& req,
                                       brass_gazebo_battery::SetCoef::Response& res);
+
+    public: bool SetChargingRate(brass_gazebo_battery::SetChargingRate::Request& req,
+                                 brass_gazebo_battery::SetChargingRate::Response& res);
 
     // Connection to the World Update events.
     protected: event::ConnectionPtr updateConnection;
@@ -102,6 +106,7 @@ namespace gazebo
     protected: ros::ServiceServer set_charging;
     protected: ros::ServiceServer set_charge;
     protected: ros::ServiceServer set_coefficients;
+    protected: ros::ServiceServer set_charging_rate;
 
     protected: boost::mutex lock;
 
