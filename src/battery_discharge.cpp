@@ -73,7 +73,7 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     this->charge_state = this->rosNode->advertise<std_msgs::Float64>("/mobile_base/commands/charge_level", 1);
 
     this->set_charging = this->rosNode->advertiseService(this->model->GetName() + "/set_charging", &BatteryPlugin::SetCharging, this);
-    this->set_charging_rate = this->rosNode->advertiseService(this->model->GetName() + "/set_charging_rate", &BatteryPlugin::SetChargingRate, this);
+    this->set_charging_rate = this->rosNode->advertiseService(this->model->GetName() + "/set_charge_rate", &BatteryPlugin::SetChargingRate, this);
     this->set_charge = this->rosNode->advertiseService(this->model->GetName() + "/set_charge", &BatteryPlugin::SetCharge, this);
     this->set_coefficients = this->rosNode->advertiseService(this->model->GetName() + "/set_model_coefficients", &BatteryPlugin::SetModelCoefficients, this);
 
@@ -182,6 +182,10 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
         lock.lock();
         this->motor_power.publish(power_msg);
         lock.unlock();
+    }
+    else if (this->q >= this->c)
+    {
+        this->q = this->c;
     }
 
     std_msgs::Float64 charge_msg;
