@@ -249,7 +249,7 @@ bool BatteryPlugin::SetCharge(brass_gazebo_battery::SetCharge::Request &req,
     else
     {
         this->q = this->c;
-        ROS_RED_STREAM("The current charge cannot be higher than the capacity of the battery, the battery is now charged with 100% of its capacity")
+        ROS_RED_STREAM("The charge cannot be higher than the capacity of the battery");
     }
     lock.unlock();
     res.result = true;
@@ -265,6 +265,7 @@ bool BatteryPlugin::SetModelCoefficients(brass_gazebo_battery::SetCoef::Request 
     #ifdef BATTERY_DEBUG
         gzdbg << "Power model is changed, new coefficients (constant, linear):" << this->e0 << this->e1 << "\n";
     #endif
+    ROS_GREEN_STREAM("Power model is changed, new coefficients (constant, linear):" << this->e0 << this->e1);
     lock.unlock();
     res.result = true;
     return true;
