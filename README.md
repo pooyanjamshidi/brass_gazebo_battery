@@ -85,8 +85,6 @@ cd ~/catkin_ws/src/brass_gazebo_battery/
 gazebo test/worlds/p2-cp1.world --verbose
 ```
 
-# Architecture
-
 
 # Exposed ROS services and topics
 
@@ -147,4 +145,4 @@ Further references: [r1](http://security.livewatch.com/forum-ref/ohms-law-calcul
 
 # Maintainer
 
-If you need a new feature to be added, please contact [Pooyan Jamshidi](pooyanjamshidi.github.io)
+If you need a new feature to be added, please contact [Pooyan Jamshidi](https://pooyanjamshidi.github.io)
