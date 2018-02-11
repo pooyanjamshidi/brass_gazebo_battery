@@ -204,14 +204,16 @@ bool BatteryPlugin::SetCharging(brass_gazebo_battery::SetCharging::Request& req,
     lock.lock();
     this->charging = req.charging;
     if (this->charging) {
-    #ifdef BATTERY_DEBUG
-            gzdbg << "Bot is charging" << "\n";
-    #endif
+        #ifdef BATTERY_DEBUG
+                gzdbg << "Bot is charging" << "\n";
+        #endif
+        ROS_GREEN_STREAM("Bot is charging");
     }
     else{
-    #ifdef BATTERY_DEBUG
-            gzdbg << "Bot disconnected from the charging station" << "\n";
-    #endif
+        #ifdef BATTERY_DEBUG
+                gzdbg << "Bot disconnected from the charging station" << "\n";
+        #endif
+        ROS_GREEN_STREAM("Bot disconnected from the charging station");
     }
     lock.unlock();
     res.result = true;
@@ -224,8 +226,9 @@ bool BatteryPlugin::SetChargingRate(brass_gazebo_battery::SetChargingRate::Reque
     lock.lock();
     this->qt = req.charge_rate;
     #ifdef BATTERY_DEBUG
-            gzdbg << "Charging rate has been changed to:" << this->qt << "\n";
+            gzdbg << "Charging rate has been changed to: " << this->qt << "\n";
     #endif
+    ROS_GREEN_STREAM("Charging rate has been changed to: " << this->qt);
     lock.unlock();
     res.result = true;
     return true;
@@ -236,10 +239,18 @@ bool BatteryPlugin::SetCharge(brass_gazebo_battery::SetCharge::Request &req,
                               brass_gazebo_battery::SetCharge::Response &res)
 {
     lock.lock();
-    this->q = req.charge;
-    #ifdef BATTERY_DEBUG
-        gzdbg << "Received charge:" << this->q << "\n";
-    #endif
+    if (req.charge <= this->c){
+        this->q = req.charge;
+        #ifdef BATTERY_DEBUG
+            gzdbg << "Received charge:" << this->q << "\n";
+        #endif
+        ROS_GREEN_STREAM("A new charge is set: " << this->q);
+    }
+    else
+    {
+        this->q = this->c;
+        ROS_RED_STREAM("The current charge cannot be higher than the capacity of the battery, the battery is now charged with 100% of its capacity")
+    }
     lock.unlock();
     res.result = true;
     return true;
