@@ -1,5 +1,7 @@
 # Functionality
-A Gazebo plugin that simulate an open-circuit battery model for challenge problem 1 of the BRASS Project. This power model simulates the power consumption of a robot. The amount of power consumed by each component of a robot depends on its usage. The battery its current state of the charge after each simulation iteration determined by `dt` int he code. The battery plugin takes the power loads for each components in the robot that consume energy and current voltage value of the battery (which updates according to the open circuit voltage model) as inputs and returns a new voltage value.
+This is a Gazebo plugin that simulate an open-circuit battery model. This is a fairly extensible and reusable battery plugin for any kind of Gazebo compatible robots. We developed this plugin primarily for the challenge problem 1 of the BRASS Project at CMU. 
+
+This power model simulates the power consumption of a robot. The amount of power consumed by each component of a robot depends on its usage. The battery its current state of the charge after each simulation iteration determined by `dt` int he code. The battery plugin takes the power loads for each components in the robot that consume energy and current voltage value of the battery (which updates according to the open circuit voltage model) as inputs and returns a new voltage value.
 
 
 # Support
