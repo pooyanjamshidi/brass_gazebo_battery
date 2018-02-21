@@ -195,7 +195,6 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
     lock.unlock();
 
     return et;
-
 }
 
 bool BatteryPlugin::SetCharging(brass_gazebo_battery::SetCharging::Request& req,
