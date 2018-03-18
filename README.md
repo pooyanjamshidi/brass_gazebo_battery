@@ -109,7 +109,13 @@ Also, this publish information about the status of robot battery to the followin
 # Extending ROS Services
 
 First create the service description file `.srv` and put it in the `srv` folder. Then declare it in the `CMakeList.txt` in the
-`add_service_files()` section.
+`add_service_files()` section. Also, add the following to the `CMakeList.txt`:
+```cmake
+generate_messages(
+DEPENDENCIES
+std_msgs  # Or other packages containing msgs
+)
+```
 
 For updating the parameters of the battery model we use ROS services,
 so here we explain how to add new services to the code if needed:
