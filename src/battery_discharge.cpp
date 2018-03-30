@@ -50,7 +50,7 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 
     // check if the ros is up!
     if (!ros::isInitialized()){
-        ROS_INFO_STREAM("Initializing ROS.");
+        ROS_INFO_STREAM("Initializing ROS...");
         int argc = 0;
         char **argv = NULL;
         ros::init(argc, argv, _sdf->Get<std::string>("ros_node"), ros::init_options::NoSigintHandler);
@@ -117,6 +117,7 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 // So explanation about Gazebo Init are here: http://playerstage.sourceforge.net/doc/Gazebo-manual-0.5-html/plugin_models.html
 void BatteryPlugin::Init()
 {
+    ROS_GREEN_STREAM("Init Battery");
     this->q = this->q0;
     this->charging = false;
 }

@@ -19,7 +19,6 @@
 #define BATTERY_DEBUG
 #define DBG_INTERVAL 5.0
 
-
 namespace gazebo
 {
     /// \brief A plugin that simulate BRASS CP1 battery model: discharge and charge according to power models

@@ -1,6 +1,7 @@
 #include "battery_consumer.hh"
 #include "gazebo/common/Battery.hh"
 #include "gazebo/physics/physics.hh"
+#include "ROS_debugging.h"
 
 #define BATTERY_CONSUMER_DEBUG
 
@@ -58,6 +59,8 @@ void BatteryConsumerPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
         gzdbg << "consumer loaded \n";
     #endif
 
+    ROS_GREEN_STREAM("Consumer loaded");
+
 }
 
 void BatteryConsumerPlugin::Init()
@@ -65,6 +68,7 @@ void BatteryConsumerPlugin::Init()
 #ifdef CONSUMER_DEBUG
     gzdbg << "consumer is initialized \n";
 #endif
+    ROS_GREEN_STREAM("Consumer is initialized");
 }
 
 void BatteryConsumerPlugin::Reset()
@@ -72,6 +76,7 @@ void BatteryConsumerPlugin::Reset()
 #ifdef CONSUMER_DEBUG
     gzdbg << "consumer is reset \n";
 #endif
+    ROS_GREEN_STREAM("Consumer is reset");
 }
 
 bool BatteryConsumerPlugin::SetConsumerPowerLoad(brass_gazebo_battery::SetLoad::Request &req,
@@ -85,6 +90,7 @@ bool BatteryConsumerPlugin::SetConsumerPowerLoad(brass_gazebo_battery::SetLoad::
     #ifdef BATTERY_CONSUMER_DEBUG
         gzdbg << "Power load of consumer has changed from:" << load << ", to:" << this->powerLoad << "\n";
     #endif
+    ROS_GREEN_STREAM("Power load of consumer has changed to: " << this->powerLoad);
 
     lock.unlock();
     res.result = true;
