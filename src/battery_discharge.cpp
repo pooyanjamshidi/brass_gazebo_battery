@@ -7,6 +7,12 @@
 #include "std_msgs/Float64.h"
 #include "ROS_debugging.h"
 
+
+enum power{
+    OFF = 0,
+    ON = 1
+};
+
 using namespace gazebo;
 
 GZ_REGISTER_MODEL_PLUGIN(BatteryPlugin);
@@ -179,7 +185,7 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
 
         this->q = 0;
         kobuki_msgs::MotorPower power_msg;
-        power_msg.state = 0;
+        power_msg.state = power::OFF;
         lock.lock();
         this->motor_power.publish(power_msg);
         lock.unlock();
