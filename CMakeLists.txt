@@ -42,6 +42,8 @@ find_package(catkin REQUIRED COMPONENTS
         camera_info_manager
         )
 
+find_package(ignition-math2 REQUIRED)
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -149,6 +151,7 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  ${IGNITION-MATH2_INCLUDE_DIRS}
 )
 
 IF(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
@@ -157,12 +160,12 @@ ENDIF()
 
 add_library(battery_discharge SHARED src/battery_discharge.cpp src/ROS_debugging.h)
 add_dependencies(battery_discharge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(battery_discharge ${roscpp_LIBRARIES} ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(battery_discharge ${roscpp_LIBRARIES} ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} ${IGNITION-MATH_LIBRARIES})
 
 # Important: add ${roscpp_LIBRARIES} to the target_link_library if you are using ros libraries as we use in the battery plugin
 add_library(battery_consumer SHARED src/battery_consumer.cpp src/ROS_debugging.h)
 add_dependencies(battery_consumer ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(battery_consumer ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(battery_consumer ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} ${IGNITION-MATH_LIBRARIES})
 
 
 ## Declare a C++ library
