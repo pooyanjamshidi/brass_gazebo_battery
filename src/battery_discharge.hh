@@ -100,6 +100,7 @@ namespace gazebo
     protected: std::unique_ptr<ros::NodeHandle> rosNode;
 
     protected: ros::Publisher charge_state;
+    protected: ros::Publisher charge_state_mwh;
     protected: ros::Publisher motor_power;
 
     protected: ros::ServiceServer set_charging;

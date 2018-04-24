@@ -77,6 +77,7 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     // Publish a topic for motor power and charge level
     this->motor_power = this->rosNode->advertise<kobuki_msgs::MotorPower>("/mobile_base/commands/motor_power", 1);
     this->charge_state = this->rosNode->advertise<std_msgs::Float64>("/mobile_base/commands/charge_level", 1);
+    this->charge_state_mwh = this->rosNode->advertise<std_msgs::Float64>("/mobile_base/commands/charge_level_mwh", 1);
 
     this->set_charging = this->rosNode->advertiseService(this->model->GetName() + "/set_charging", &BatteryPlugin::SetCharging, this);
     this->set_charging_rate = this->rosNode->advertiseService(this->model->GetName() + "/set_charge_rate", &BatteryPlugin::SetChargingRate, this);
@@ -195,10 +196,13 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
         this->q = this->c;
     }
 
-    std_msgs::Float64 charge_msg;
+    std_msgs::Float64 charge_msg, charge_msg_mwh;
     charge_msg.data = this->q;
+    charge_msg_mwh.data = this->q * 1000 * this-> et;
+
     lock.lock();
     this->charge_state.publish(charge_msg);
+    this->charge_state_mwh.publish(charge_msg_mwh);
     lock.unlock();
 
     return et;
