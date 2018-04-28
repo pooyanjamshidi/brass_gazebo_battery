@@ -1,5 +1,5 @@
 # Functionality
-This is a Gazebo plugin that simulate an open-circuit battery model. This is a fairly extensible and reusable battery plugin for any kind of Gazebo compatible robots. We developed this plugin primarily for the challenge problem 1 of the BRASS Project at CMU. 
+This is a Gazebo plugin that simulate an open-circuit battery model. This is a fairly extensible and reusable battery plugin for any kind of Gazebo compatible robots. We developed this plugin primarily for the challenge problem 1 (CP1) of the BRASS Project at CMU. 
 
 This power model simulates the power consumption of a robot. The amount of power consumed by each component of a robot depends on its usage. The battery its current state of the charge after each simulation iteration determined by `dt` in the code. The battery plugin takes the power loads for each components in the robot that consume energy and current voltage value of the battery (which updates according to the open circuit voltage model) as inputs and returns a new voltage value.
 
@@ -146,8 +146,8 @@ this->rosNode->advertiseService(this->model->GetName() + "/api", &Plugin::Servic
 ```
 
 # Notes about conversions
-For converting capacity and charge rate (in Ah) to power (mwh) which is consumed by planner the formula is (Ah)*(V) = (Wh). For example, if you have a 3Ah battery rated at 5V, the power is 3Ah * 5V = 15wh or 15000mwh.
-For converting Watts to watt-hour = watt * hour, e.g., 6 watts / 3600 (wh) per seconds. 
+For converting capacity and charge rate (in `Ah`) to power (`mwh`) which is consumed by planner the formula is `(Ah)*(V) = (Wh)`. For example, if you have a `3Ah` battery rated at `5V`, the power is `3Ah * 5V = 15wh` or `15000mwh`.
+For converting `Watts` to `watt-hour`, we do `watt * hour`, e.g., `6 watts / 3600 (wh)` per seconds. 
 
 # Acknowledgements
 We used/inspired by existing theory of open circuit battery model. This battery discharge/charge plugin uses the Gazebo `Battery` class which is shipped by the default simulator.
@@ -157,4 +157,4 @@ Further references: [r1](http://security.livewatch.com/forum-ref/ohms-law-calcul
 
 # Maintainer
 
-If you need a new feature to be added, please contact [Pooyan Jamshidi](https://pooyanjamshidi.github.io)
+If you need a new feature to be added, please contact [Pooyan Jamshidi](https://pooyanjamshidi.github.io).
