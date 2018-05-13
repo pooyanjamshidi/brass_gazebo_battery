@@ -13,6 +13,12 @@ enum power{
     ON = 1
 };
 
+template <typename T>
+T max(T x, T y)
+{
+    return x < y ? y : x;
+}
+
 using namespace gazebo;
 
 GZ_REGISTER_MODEL_PLUGIN(BatteryPlugin);
