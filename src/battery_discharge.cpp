@@ -71,7 +71,7 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     this->model = _model;
     this->world = _model->GetWorld();
 
-    this->sim_time_now = this->world->GetSimTime().Double();
+    this->sim_time_now = this->world->SimTime().Double();
 
     // Create ros node and publish stuff there!
     this->rosNode.reset(new ros::NodeHandle(_sdf->Get<std::string>("ros_node")));
@@ -117,7 +117,7 @@ void BatteryPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     // Specifying a custom update function
     this->battery->SetUpdateFunc(std::bind(&BatteryPlugin::OnUpdateVoltage, this, std::placeholders::_1));
 
-    this->sim_time_now = this->world->GetSimTime().Double();
+    this->sim_time_now = this->world->SimTime().Double();
 
     #ifdef BATTERY_DEBUG
         gzdbg << "Loaded the BatteryPlugin at time:" << this->sim_time_now << "\n";
@@ -144,7 +144,7 @@ void BatteryPlugin::Reset()
 
 double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
 {
-    double dt = this->world->GetPhysicsEngine()->GetMaxStepSize();
+    double dt = this->world->Physics()->GetMaxStepSize();
     double totalpower = 0.0;
     double k = dt / this->tau;
 
@@ -168,7 +168,7 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
         this->q = this->q + GZ_SEC_TO_HOUR(dt * this->qt);
     }
 
-    this->sim_time_now = this->world->GetSimTime().Double();
+    this->sim_time_now = this->world->SimTime().Double();
 
     #ifdef BATTERY_DEBUG
         gzdbg << "Current charge:" << this->q << ", at:" << this->sim_time_now << "\n";
@@ -184,7 +184,7 @@ double BatteryPlugin::OnUpdateVoltage(const common::BatteryPtr &_battery)
     //Turn off the motor
     if (this->q <= 0)
     {
-        this->sim_time_now = this->world->GetSimTime().Double();
+        this->sim_time_now = this->world->SimTime().Double();
 
         #ifdef BATTERY_DEBUG
             gzdbg << "Out of juice at:" << this->sim_time_now << "\n";
